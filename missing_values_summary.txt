@@ -1,0 +1,22 @@
+Missing values in each column:
+App_Id                          0
+App_Name                        1
+AppStore_Url                    0
+Primary_Genre                   0
+Content_Rating                  0
+Size_Bytes                    224
+Required_IOS_Version            0
+Released                        3
+Updated                         0
+Version                         0
+Price                         490
+Currency                        0
+Free                            0
+DeveloperId                     0
+Developer                       0
+Developer_Url                1109
+Developer_Website          643988
+Average_User_Rating             0
+Reviews                         0
+Current_Version_Score           0
+Current_Version_Reviews         0
