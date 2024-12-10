@@ -42,3 +42,21 @@ dataset = dataset.drop(columns=['Developer_Url','Developer_Website'])
 
 # Verify missing values are handled
 print("Remaining missing values:\n", dataset.isnull().sum())
+
+
+#Step 3: Data Cleaning and Transformation
+
+#3.1 Removing duplicate rows
+print("Number of duplicate rows before removal: ", dataset.duplicated().sum())
+dataset = dataset.drop_duplicates()
+print("Number of duplicate rows after removal: ", dataset.duplicated().sum())
+
+#3.2 Standardize formats
+dataset['App_Name'] = dataset['App_Name'].str.title()
+
+#3.3 Encode categorical variables
+dataset['Primary_Genre_Encoded'] = dataset['Primary_Genre'].astype('category').cat.codes 
+dataset['Content_Rating_Encoded'] = dataset['Content_Rating'].astype('category').cat.codes
+dataset['Currency_Encoded'] = dataset['Currency'].astype('category').cat.codes
+dataset['Developer_Encoded'] = dataset['Developer'].astype('category').cat.codes
+dataset['Free'] = dataset['Free'].astype(int)
