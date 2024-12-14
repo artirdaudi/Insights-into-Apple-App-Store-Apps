@@ -209,7 +209,7 @@ price_genre_analysis = price_genre_analysis.sort_values(by='Percentage_Paid', as
 plt.figure(figsize=(12, 6))
 sns.barplot(x='Percentage_Paid', y='Primary_Genre', data=price_genre_analysis, palette='mako')
 plt.title('Percentage of Paid Apps by Genre', fontsize=14, fontweight='bold')
-plt.suptitle(wrap_text("This chart shows the percentage of paid apps in each genre. Genres like Business or Productivity might have higher percentages of paid apps, reflecting their focus on premium tools and features."), fontsize=10, y=0.95, color='gray')
+plt.suptitle(wrap_text("This chart shows the percentage of paid apps in each genre."), fontsize=10, y=0.95, color='gray')
 plt.xlabel('Percentage of Paid Apps (%)')
 plt.ylabel('Genre')
 plt.show()
