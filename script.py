@@ -193,3 +193,40 @@ plt.xlabel('Year')
 plt.ylabel('Number of Apps')
 plt.legend(title='Genre', bbox_to_anchor=(1.05, 1), loc='upper left')
 plt.show()
+
+
+# Group by genre and calculate the percentage of paid apps
+price_genre_analysis = dataset.groupby('Primary_Genre').agg(
+    Total_Apps=('App_Id', 'count'),
+    Paid_Apps=('Price', lambda x: (x > 0).sum())  # Count apps with Price > 0
+).reset_index()
+price_genre_analysis['Percentage_Paid'] = (price_genre_analysis['Paid_Apps'] / price_genre_analysis['Total_Apps']) * 100
+
+# Sort by percentage of paid apps
+price_genre_analysis = price_genre_analysis.sort_values(by='Percentage_Paid', ascending=False)
+
+# Visualization: Price vs Genre
+plt.figure(figsize=(12, 6))
+sns.barplot(x='Percentage_Paid', y='Primary_Genre', data=price_genre_analysis, palette='mako')
+plt.title('Percentage of Paid Apps by Genre', fontsize=14, fontweight='bold')
+plt.suptitle(wrap_text("This chart shows the percentage of paid apps in each genre. Genres like Business or Productivity might have higher percentages of paid apps, reflecting their focus on premium tools and features."), fontsize=10, y=0.95, color='gray')
+plt.xlabel('Percentage of Paid Apps (%)')
+plt.ylabel('Genre')
+plt.show()
+
+# Calculate estimated revenue for each app
+dataset['Estimated_Revenue'] = dataset['Price'] * dataset['Reviews']
+
+# Group by genre and sum the estimated revenue
+top_earning_genres = dataset.groupby('Primary_Genre')['Estimated_Revenue'].sum().reset_index()
+top_earning_genres = top_earning_genres.sort_values(by='Estimated_Revenue', ascending=False)
+
+# Visualization: Top-Earning Genres
+plt.figure(figsize=(12, 6))
+sns.barplot(x='Estimated_Revenue', y='Primary_Genre', data=top_earning_genres.head(10), palette='crest')
+plt.title('Top-Earning Genres (Estimated)', fontsize=14, fontweight='bold')
+plt.suptitle(wrap_text("This chart estimates the top-earning genres by combining app prices and review counts. Revenue is approximated, assuming reviews are proportional to purchases."), fontsize=10, y=0.95, color='gray')
+plt.xlabel('Estimated Revenue ($)')
+plt.ylabel('Genre')
+plt.show()
+
