@@ -275,3 +275,50 @@ plt.suptitle(wrap_text("This chart shows developers whose apps have received the
 plt.xlabel('Total Reviews')
 plt.ylabel('Developer')
 plt.show()
+
+
+# Calculate total apps and average ratings for each genre
+underserved_genres = dataset.groupby('Primary_Genre').agg(
+    Total_Apps=('App_Id', 'count'),
+    Average_Rating=('Average_User_Rating', 'mean')
+).reset_index()
+
+# Calculate the global average rating for comparison
+global_average_rating = dataset['Average_User_Rating'].mean()
+
+# Filter for underserved genres: Fewer apps but above-average ratings
+underserved_genres = underserved_genres[
+    (underserved_genres['Total_Apps'] < underserved_genres['Total_Apps'].mean()) &
+    (underserved_genres['Average_Rating'] > global_average_rating)
+]
+
+# Visualization: Underserved Genres
+plt.figure(figsize=(12, 6))
+sns.barplot(x='Average_Rating', y='Primary_Genre', data=underserved_genres.sort_values('Average_Rating', ascending=False), palette='coolwarm')
+plt.title('Underserved Genres: Fewer Apps, Higher Ratings', fontsize=14, fontweight='bold')
+plt.suptitle(wrap_text("These genres have fewer apps but higher-than-average ratings, indicating potential opportunities for new apps to meet user demand."), fontsize=10, y=0.95, color='gray')
+plt.xlabel('Average Rating')
+plt.ylabel('Genre')
+plt.show()
+
+
+# Calculate total apps and paid apps for each genre
+price_gaps = dataset.groupby('Primary_Genre').agg(
+    Total_Apps=('App_Id', 'count'),
+    Paid_Apps=('Price', lambda x: (x > 0).sum())
+).reset_index()
+
+# Calculate the percentage of paid apps
+price_gaps['Percentage_Paid'] = (price_gaps['Paid_Apps'] / price_gaps['Total_Apps']) * 100
+
+# Filter for genres with low percentage of paid apps
+price_gaps = price_gaps[price_gaps['Percentage_Paid'] < price_gaps['Percentage_Paid'].mean()]
+
+# Visualization: Genres with Price Gaps
+plt.figure(figsize=(12, 6))
+sns.barplot(x='Percentage_Paid', y='Primary_Genre', data=price_gaps.sort_values('Percentage_Paid', ascending=True), palette='viridis')
+plt.title('Price Gaps: Genres with Few Paid Apps', fontsize=14, fontweight='bold')
+plt.suptitle(wrap_text("These genres have a low percentage of paid apps, suggesting opportunities for premium offerings."), fontsize=10, y=0.95, color='gray')
+plt.xlabel('Percentage of Paid Apps (%)')
+plt.ylabel('Genre')
+plt.show()
