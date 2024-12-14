@@ -230,3 +230,48 @@ plt.xlabel('Estimated Revenue ($)')
 plt.ylabel('Genre')
 plt.show()
 
+
+# Group by developer and count the number of apps
+top_developers = dataset.groupby('Developer')['App_Id'].count().reset_index()
+top_developers = top_developers.sort_values(by='App_Id', ascending=False).head(10)
+
+# Visualization: Top Developers by Number of Apps
+plt.figure(figsize=(12, 6))
+sns.barplot(x='App_Id', y='Developer', data=top_developers, palette='viridis')
+plt.title('Top Developers by Number of Apps', fontsize=14, fontweight='bold')
+plt.suptitle(wrap_text("This chart shows the top 10 developers with the most apps on the App Store, highlighting their dominance in app releases."), fontsize=10, y=0.95, color='gray')
+plt.xlabel('Number of Apps')
+plt.ylabel('Developer')
+plt.show()
+
+
+# Calculate average ratings and total reviews for each developer
+developer_performance = dataset.groupby('Developer').agg(
+    Average_Rating=('Average_User_Rating', 'mean'),
+    Total_Reviews=('Reviews', 'sum')
+).reset_index()
+
+# Top developers by ratings (with at least 5 apps for relevance)
+top_rated_developers = dataset.groupby('Developer').filter(lambda x: len(x) >= 5)
+top_rated_developers = developer_performance.sort_values(by='Average_Rating', ascending=False).head(10)
+
+# Top developers by total reviews
+top_reviewed_developers = developer_performance.sort_values(by='Total_Reviews', ascending=False).head(10)
+
+# Visualization: Top-Rated Developers
+plt.figure(figsize=(12, 6))
+sns.barplot(x='Average_Rating', y='Developer', data=top_rated_developers, palette='mako')
+plt.title('Top Developers by Average Rating (Min. 5 Apps)', fontsize=14, fontweight='bold')
+plt.suptitle(wrap_text("This chart highlights developers with the highest-rated apps, showcasing user satisfaction with their offerings."), fontsize=10, y=0.95, color='gray')
+plt.xlabel('Average User Rating')
+plt.ylabel('Developer')
+plt.show()
+
+# Visualization: Top-Reviewed Developers
+plt.figure(figsize=(12, 6))
+sns.barplot(x='Total_Reviews', y='Developer', data=top_reviewed_developers, palette='rocket')
+plt.title('Top Developers by Total Reviews', fontsize=14, fontweight='bold')
+plt.suptitle(wrap_text("This chart shows developers whose apps have received the most reviews, indicating high user engagement and interaction."), fontsize=10, y=0.95, color='gray')
+plt.xlabel('Total Reviews')
+plt.ylabel('Developer')
+plt.show()
